@@ -412,9 +412,11 @@ const handleMessage = async (
 };
 
 const handleMsgAck = async (msg: WbotMessage, ack: MessageAck) => {
-  await new Promise(r => setTimeout(r, 500));
+  await new Promise(r => setTimeout(r, 3000));
 
   const io = getIO();
+
+  console.log(msg.id)
 
   try {
     const messageToUpdate = await Message.findByPk(msg.id.id, {
@@ -427,9 +429,11 @@ const handleMsgAck = async (msg: WbotMessage, ack: MessageAck) => {
         }
       ]
     });
+
     if (!messageToUpdate) {
       return;
     }
+
     await messageToUpdate.update({ ack });
 
     io.to(messageToUpdate.ticketId.toString()).emit("appMessage", {

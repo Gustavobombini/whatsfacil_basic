@@ -1,6 +1,13 @@
 import React, { useState, useContext, useEffect } from "react";
 import clsx from "clsx";
 
+import { Link as RouterLink } from "react-router-dom";
+
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListSubheader from "@material-ui/core/ListSubheader";
+
 import {
   makeStyles,
   Drawer,
@@ -25,15 +32,13 @@ import { AuthContext } from "../context/Auth/AuthContext";
 import BackdropLoading from "../components/BackdropLoading";
 import { i18n } from "../translate/i18n";
 
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     height: "100vh",
-    [theme.breakpoints.down("sm")]: {
-      height: "calc(100vh - 56px)",
-    },
   },
 
   toolbar: {
@@ -43,7 +48,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-end",
-    padding: "0 8px",
     minHeight: "48px",
   },
   appBar: {
@@ -53,14 +57,7 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
   },
-  appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
+
   menuButton: {
     marginRight: 36,
   },
@@ -98,8 +95,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
   },
   container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
+    
   },
   paper: {
     padding: theme.spacing(2),
@@ -165,28 +161,7 @@ const LoggedInLayout = ({ children }) => {
 
   return (
     <div className={classes.root}>
-      <Drawer
-        variant={drawerVariant}
-        className={drawerOpen ? classes.drawerPaper : classes.drawerPaperClose}
-        classes={{
-          paper: clsx(
-            classes.drawerPaper,
-            !drawerOpen && classes.drawerPaperClose
-          ),
-        }}
-        open={drawerOpen}
-      >
-        <div className={classes.toolbarIcon}>
-          <IconButton onClick={() => setDrawerOpen(!drawerOpen)}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <Divider />
-        <List>
-          <MainListItems drawerClose={drawerClose} />
-        </List>
-        <Divider />
-      </Drawer>
+      
       <UserModal
         open={userModalOpen}
         onClose={() => setUserModalOpen(false)}
@@ -198,29 +173,10 @@ const LoggedInLayout = ({ children }) => {
         color={process.env.NODE_ENV === "development" ? "inherit" : "primary"}
       >
         <Toolbar variant="dense" className={classes.toolbar}>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={() => setDrawerOpen(!drawerOpen)}
-            className={clsx(
-              classes.menuButton,
-              drawerOpen && classes.menuButtonHidden
-            )}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography
-            component="h1"
-            variant="h6"
-            color="inherit"
-            noWrap
-            className={classes.title}
-          >
-            WhaTicket
-          </Typography>
-          {user.id && <NotificationsPopOver />}
 
+         <MainListItems/>
+
+          
           <div>
             <IconButton
               aria-label="account of current user"

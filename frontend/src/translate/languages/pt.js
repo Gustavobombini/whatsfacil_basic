@@ -18,7 +18,7 @@ const messages = {
         },
       },
       login: {
-        title: "Login",
+        title: "Whats Fácil",
         form: {
           email: "Email",
           password: "Senha",
@@ -236,9 +236,9 @@ const messages = {
           message: "Mensagem de",
         },
         tabs: {
-          open: { title: "Inbox" },
-          closed: { title: "Resolvidos" },
-          search: { title: "Busca" },
+          open: { title: "Em Andamento" },
+          closed: { title: "Finalizados" },
+          search: { title: "Buscar" },
         },
         search: {
           placeholder: "Buscar tickets e mensagens",
@@ -282,9 +282,9 @@ const messages = {
       },
       mainDrawer: {
         listItems: {
-          dashboard: "Dashboard",
-          connections: "Conexões",
-          tickets: "Tickets",
+          dashboard: "WhatsFacil",
+          connections: "Numeros",
+          tickets: "Conversas",
           contacts: "Contatos",
           quickAnswers: "Respostas Rápidas",
           queues: "Filas",
@@ -380,10 +380,10 @@ const messages = {
         header: {
           assignedTo: "Atribuído à:",
           buttons: {
-            return: "Retornar",
-            resolve: "Resolver",
+            return: "Voltar para fila",
+            resolve: "Finalizar",
             reopen: "Reabrir",
-            accept: "Aceitar",
+            accept: "Iniciar",
           },
         },
       },

@@ -33,12 +33,12 @@ function ListItemLink(props) {
   );
 
   return (
-    <li>
+   
       <ListItem button component={renderLink} className={className}>
-        {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
-        <ListItemText primary={primary} />
+        {icon ? <label>{icon}</label> : null}
+        {primary}
       </ListItem>
-    </li>
+   
   );
 }
 
@@ -71,46 +71,35 @@ const MainListItems = (props) => {
   }, [whatsApps]);
 
   return (
-    <div onClick={drawerClose}>
+    <>
       <ListItemLink
-        to="/"
-        primary="Dashboard"
-        icon={<DashboardOutlinedIcon />}
-      />
-      <ListItemLink
-        to="/connections"
-        primary={i18n.t("mainDrawer.listItems.connections")}
-        icon={
-          <Badge badgeContent={connectionWarning ? "!" : 0} color="error">
-            <SyncAltIcon />
-          </Badge>
-        }
-      />
-      <ListItemLink
-        to="/tickets"
-        primary={i18n.t("mainDrawer.listItems.tickets")}
-        icon={<WhatsAppIcon />}
-      />
+          to="/"
+          primary="WhatsFacil"
+          icon={<DashboardOutlinedIcon />}
+        />
+        
+        <ListItemLink
+          to="/tickets"
+          primary={i18n.t("mainDrawer.listItems.tickets")}
+          icon={<WhatsAppIcon />}
+        />
 
-      <ListItemLink
-        to="/contacts"
-        primary={i18n.t("mainDrawer.listItems.contacts")}
-        icon={<ContactPhoneOutlinedIcon />}
-      />
-      <ListItemLink
-        to="/quickAnswers"
-        primary={i18n.t("mainDrawer.listItems.quickAnswers")}
-        icon={<QuestionAnswerOutlinedIcon />}
-      />
+        <ListItemLink
+          to="/contacts"
+          primary={i18n.t("mainDrawer.listItems.contacts")}
+          icon={<ContactPhoneOutlinedIcon />}
+        />
+        <ListItemLink
+          to="/quickAnswers"
+          primary={i18n.t("mainDrawer.listItems.quickAnswers")}
+          icon={<QuestionAnswerOutlinedIcon />}
+        />
+      
       <Can
         role={user.profile}
         perform="drawer-admin-items:view"
         yes={() => (
           <>
-            <Divider />
-            <ListSubheader inset>
-              {i18n.t("mainDrawer.listItems.administration")}
-            </ListSubheader>
             <ListItemLink
               to="/users"
               primary={i18n.t("mainDrawer.listItems.users")}
@@ -122,14 +111,19 @@ const MainListItems = (props) => {
               icon={<AccountTreeOutlinedIcon />}
             />
             <ListItemLink
-              to="/settings"
-              primary={i18n.t("mainDrawer.listItems.settings")}
-              icon={<SettingsOutlinedIcon />}
-            />
+          to="/connections"
+          primary={i18n.t("mainDrawer.listItems.connections")}
+          icon={
+            <Badge badgeContent={connectionWarning ? "!" : 0} color="error">
+              <SyncAltIcon />
+            </Badge>
+          }
+        />
+           
           </>
         )}
       />
-    </div>
+   </>
   );
 };
 
