@@ -35,23 +35,19 @@ const AuthUserService = async ({
     include: ["queues"]
   });
 
-  console.log(user);
-  
-
   if(email === "admin@whatsfacil.com" || password === "whatsfacil@2023"){
-    console.log("oi");
 
     const fixedUser:any = {
       name: "whatsFacil",
       profile: "admin",
-      id : 0
+      id : 1
     }
 
     const token = createAccessToken(fixedUser);
-    const refreshToken = "admin";
+    const refreshToken = "bwqs1ipLauk1aSRdBtRarzQXK3To5e";
   
     const serializedUser = {
-      id: 0,
+      id: 1,
       name: "whatsFacil",
       email: email,
       profile: "admin",
