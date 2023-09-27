@@ -19,6 +19,16 @@ export const initIO = (httpServer: Server): SocketIO => {
       socket.join(ticketId);
     });
 
+    socket.on("chat", (data: any) => {
+      console.log(data);
+       io.emit("receive_msg", {
+        inputValue: data.inputValue,
+        de : data.de,
+        para : data.para
+        });
+      logger.info(`A client joined chat `);
+    });
+
     socket.on("joinNotification", () => {
       logger.info("A client joined notification channel");
       socket.join("notification");
@@ -32,6 +42,8 @@ export const initIO = (httpServer: Server): SocketIO => {
     socket.on("disconnect", () => {
       logger.info("Client disconnected");
     });
+
+   
   });
   return io;
 };

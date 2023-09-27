@@ -116,6 +116,7 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
+
 const TicketListItem = ({ ticket }) => {
 	const classes = useStyles();
 	const history = useHistory();
@@ -153,7 +154,9 @@ const TicketListItem = ({ ticket }) => {
 
 	return (
 		<React.Fragment key={ticket.id}>
-			<ListItem
+			{ticket.queue?.name &&
+			<>
+				<ListItem
 				dense
 				button
 				onClick={e => {
@@ -256,6 +259,9 @@ const TicketListItem = ({ ticket }) => {
 				)}
 			</ListItem>
 			<Divider variant="inset" component="li" />
+			</>
+			}
+			
 		</React.Fragment>
 	);
 };

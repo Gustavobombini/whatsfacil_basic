@@ -231,7 +231,6 @@ const isValidMsg = (msg: WbotMessage): boolean => {
     msg.type === "image" ||
     msg.type === "document" ||
     msg.type === "vcard" ||
-    //msg.type === "multi_vcard" ||
     msg.type === "sticker" ||
     msg.type === "location"
   )
@@ -345,66 +344,7 @@ const handleMessage = async (
       }
     }
 
-    /* if (msg.type === "multi_vcard") {
-      try {
-        const array = msg.vCards.toString().split("\n");
-        let name = "";
-        let number = "";
-        const obj = [];
-        const conts = [];
-        for (let index = 0; index < array.length; index++) {
-          const v = array[index];
-          const values = v.split(":");
-          for (let ind = 0; ind < values.length; ind++) {
-            if (values[ind].indexOf("+") !== -1) {
-              number = values[ind];
-            }
-            if (values[ind].indexOf("FN") !== -1) {
-              name = values[ind + 1];
-            }
-            if (name !== "" && number !== "") {
-              obj.push({
-                name,
-                number
-              });
-              name = "";
-              number = "";
-            }
-          }
-        }
-
-        // eslint-disable-next-line no-restricted-syntax
-        for await (const ob of obj) {
-          try {
-            const cont = await CreateContactService({
-              name: ob.name,
-              number: ob.number.replace(/\D/g, "")
-            });
-            conts.push({
-              id: cont.id,
-              name: cont.name,
-              number: cont.number
-            });
-          } catch (error) {
-            if (error.message === "ERR_DUPLICATED_CONTACT") {
-              const cont = await GetContactService({
-                name: ob.name,
-                number: ob.number.replace(/\D/g, ""),
-                email: ""
-              });
-              conts.push({
-                id: cont.id,
-                name: cont.name,
-                number: cont.number
-              });
-            }
-          }
-        }
-        msg.body = JSON.stringify(conts);
-      } catch (error) {
-        console.log(error);
-      }
-    } */
+   
   } catch (err) {
     Sentry.captureException(err);
     logger.error(`Error handling whatsapp message: Err: ${err}`);
@@ -412,11 +352,9 @@ const handleMessage = async (
 };
 
 const handleMsgAck = async (msg: WbotMessage, ack: MessageAck) => {
-  await new Promise(r => setTimeout(r, 3000));
+  await new Promise(r => setTimeout(r, 5000));
 
   const io = getIO();
-
-  console.log(msg.id)
 
   try {
     const messageToUpdate = await Message.findByPk(msg.id.id, {
@@ -429,11 +367,9 @@ const handleMsgAck = async (msg: WbotMessage, ack: MessageAck) => {
         }
       ]
     });
-
     if (!messageToUpdate) {
       return;
     }
-
     await messageToUpdate.update({ ack });
 
     io.to(messageToUpdate.ticketId.toString()).emit("appMessage", {

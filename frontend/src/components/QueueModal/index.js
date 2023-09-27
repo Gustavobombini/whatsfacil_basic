@@ -14,13 +14,18 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
+import Row from "react-bootstrap/Row"
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
+
+
 import { i18n } from "../../translate/i18n";
 
 import api from "../../services/api";
 import toastError from "../../errors/toastError";
 import ColorPicker from "../ColorPicker";
 import { IconButton, InputAdornment } from "@material-ui/core";
-import { Colorize } from "@material-ui/icons";
+import { Colorize, Label } from "@material-ui/icons";
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -52,6 +57,11 @@ const useStyles = makeStyles(theme => ({
 		width: 20,
 		height: 20,
 	},
+	label:{
+		fontSize: "15px", 
+		border: "2px solid #000",
+		borderRadius: "10px"
+	}
 }));
 
 const QueueSchema = Yup.object().shape({
@@ -75,6 +85,7 @@ const QueueModal = ({ open, onClose, queueId }) => {
 	const [colorPickerModalOpen, setColorPickerModalOpen] = useState(false);
 	const [queue, setQueue] = useState(initialState);
 	const greetingRef = useRef();
+	const [subQueue, setSub] = useState([])
 
 	useEffect(() => {
 		(async () => {
@@ -102,6 +113,11 @@ const QueueModal = ({ open, onClose, queueId }) => {
 		onClose();
 		setQueue(initialState);
 	};
+
+	const addSubButton = (e) => {
+		e.preventDefault()
+		setSub((sub) => [...sub, sub+1])
+	}
 
 	const handleSaveQueue = async values => {
 		try {
@@ -213,6 +229,10 @@ const QueueModal = ({ open, onClose, queueId }) => {
 										margin="dense"
 									/>
 								</div>
+
+								
+									
+								
 							</DialogContent>
 							<DialogActions>
 								<Button

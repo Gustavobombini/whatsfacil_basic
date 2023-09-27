@@ -2,7 +2,7 @@ import { QueryInterface, DataTypes } from "sequelize";
 
 module.exports = {
   up: (queryInterface: QueryInterface) => {
-    return queryInterface.createTable("Users", {
+    return queryInterface.createTable("Chatbots", {
       id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -11,19 +11,26 @@ module.exports = {
       },
       name: {
         type: DataTypes.STRING,
-        allowNull: false
-      },
-      email: {
-        type: DataTypes.STRING,
         allowNull: false,
         unique: true
       },
-      passwordHash: {
-        type: DataTypes.STRING,
-        allowNull: false
+      queueId: {
+        type: DataTypes.INTEGER,
+        references: { model: "Queues", key: "id" },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE"
       },
-      queuesNull: {
-        type: DataTypes.BOOLEAN,
+      chatbotId: {
+        type: DataTypes.INTEGER,
+        references: { model: "Chatbots", key: "id" },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE"
+      },
+      id_chatbot: {
+        type: DataTypes.INTEGER,
+      },
+      greetingMessage: {
+        type: DataTypes.TEXT
       },
       createdAt: {
         type: DataTypes.DATE,
@@ -37,6 +44,6 @@ module.exports = {
   },
 
   down: (queryInterface: QueryInterface) => {
-    return queryInterface.dropTable("Users");
+    return queryInterface.dropTable("Chatbots");
   }
 };

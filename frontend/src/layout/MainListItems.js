@@ -10,7 +10,7 @@ import { Badge } from "@material-ui/core";
 import DashboardOutlinedIcon from "@material-ui/icons/DashboardOutlined";
 import WhatsAppIcon from "@material-ui/icons/WhatsApp";
 import SyncAltIcon from "@material-ui/icons/SyncAlt";
-import SettingsOutlinedIcon from "@material-ui/icons/SettingsOutlined";
+import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import PeopleAltOutlinedIcon from "@material-ui/icons/PeopleAltOutlined";
 import ContactPhoneOutlinedIcon from "@material-ui/icons/ContactPhoneOutlined";
 import AccountTreeOutlinedIcon from "@material-ui/icons/AccountTreeOutlined";
@@ -82,6 +82,12 @@ const MainListItems = (props) => {
           to="/tickets"
           primary={i18n.t("mainDrawer.listItems.tickets")}
           icon={<WhatsAppIcon />}
+        />
+
+        <ListItemLink
+          to="/internalchat"
+          primary="Chat Interno"
+          icon={< ChatBubbleOutlineIcon/>}
         />
 
         <ListItemLink

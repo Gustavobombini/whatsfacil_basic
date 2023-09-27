@@ -13,6 +13,7 @@ import Users from "../pages/Users";
 import Contacts from "../pages/Contacts/";
 import QuickAnswers from "../pages/QuickAnswers/";
 import Queues from "../pages/Queues/";
+import InternalChat from "../pages/InternalChat";
 import { AuthProvider } from "../context/Auth/AuthContext";
 import { WhatsAppsProvider } from "../context/WhatsApp/WhatsAppsContext";
 import Route from "./Route";
@@ -41,6 +42,7 @@ const Routes = () => {
               />
               <Route exact path="/contacts" component={Contacts} isPrivate />
               <Route exact path="/users" component={Users} isPrivate />
+              <Route exact path="/internalchat" component={InternalChat} isPrivate />
               <Route
                 exact
                 path="/quickAnswers"
