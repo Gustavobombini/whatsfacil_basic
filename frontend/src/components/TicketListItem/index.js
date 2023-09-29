@@ -116,7 +116,6 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-
 const TicketListItem = ({ ticket }) => {
 	const classes = useStyles();
 	const history = useHistory();
@@ -152,11 +151,12 @@ const TicketListItem = ({ ticket }) => {
 		history.push(`/tickets/${id}`);
 	};
 
-	return (
+	
+		return (
+		
 		<React.Fragment key={ticket.id}>
-			{ticket.queue?.name &&
-			<>
-				<ListItem
+			
+			<ListItem
 				dense
 				button
 				onClick={e => {
@@ -168,6 +168,7 @@ const TicketListItem = ({ ticket }) => {
 					[classes.pendingTicket]: ticket.status === "pending",
 				})}
 			>
+				
 				<Tooltip
 					arrow
 					placement="right"
@@ -245,6 +246,8 @@ const TicketListItem = ({ ticket }) => {
 						</span>
 					}
 				/>
+				
+				
 				{ticket.status === "pending" && (
 					<ButtonWithSpinner
 						color="primary"
@@ -258,12 +261,16 @@ const TicketListItem = ({ ticket }) => {
 					</ButtonWithSpinner>
 				)}
 			</ListItem>
-			<Divider variant="inset" component="li" />
-			</>
-			}
 			
+			
+		
+
+			<Divider variant="inset" component="li" />
+		
 		</React.Fragment>
 	);
+	
+	
 };
 
 export default TicketListItem;

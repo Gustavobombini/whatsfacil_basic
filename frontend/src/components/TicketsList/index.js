@@ -159,6 +159,7 @@ const reducer = (state, action) => {
 	const [pageNumber, setPageNumber] = useState(1);
 	const [ticketsList, dispatch] = useReducer(reducer, []);
 	const { user } = useContext(AuthContext);
+	
 
 	useEffect(() => {
 		dispatch({ type: "RESET" });
@@ -289,9 +290,11 @@ const reducer = (state, action) => {
 						</div>
 					) : (
 						<>
-							{ticketsList.map(ticket => (
-								<TicketListItem ticket={ticket} key={ticket.id} />
-							))}
+							{ticketsList.map(ticket => {
+								if(ticket.queueId || user.queuesNull )
+									return <TicketListItem ticket={ticket} key={ticket.id} />
+							})}
+								
 						</>
 					)}
 					{loading && <TicketsListSkeleton />}

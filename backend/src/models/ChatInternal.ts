@@ -4,17 +4,13 @@ import {
   CreatedAt,
   UpdatedAt,
   Model,
-  DataType,
-  BeforeCreate,
-  BeforeUpdate,
   PrimaryKey,
   AutoIncrement,
-  Default,
-  HasMany,
-  BelongsToMany,
-  ForeignKey,
-  BelongsTo
 } from "sequelize-typescript";
+
+@Table({
+  freezeTableName: true, // Impede a pluralização automática
+})
 
 
 @Table

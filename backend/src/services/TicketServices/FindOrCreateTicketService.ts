@@ -1,4 +1,4 @@
-import { subHours } from "date-fns";
+import { add } from "date-fns";
 import { Op } from "sequelize";
 import Contact from "../../models/Contact";
 import Ticket from "../../models/Ticket";
@@ -12,13 +12,16 @@ const FindOrCreateTicketService = async (
 ): Promise<Ticket> => {
   let ticket = await Ticket.findOne({
     where: {
-      status: {
-        [Op.or]: ["open", "pending"]
-      },
+      
+        [Op.or]: [{status :"open"}, {status: "pending"}],
+    
       contactId: groupContact ? groupContact.id : contact.id,
       whatsappId: whatsappId
     }
   });
+
+  console.log(ticket);
+  
 
   if (ticket) {
     await ticket.update({ unreadMessages });
@@ -41,12 +44,13 @@ const FindOrCreateTicketService = async (
       });
     }
   }
+  const value = 10;
 
   if (!ticket && !groupContact) {
     ticket = await Ticket.findOne({
       where: {
         updatedAt: {
-          [Op.between]: [+subHours(new Date(), 2), +new Date()]
+          [Op.between]: [+add(new Date(), { seconds: value }), +new Date()]
         },
         contactId: contact.id,
         whatsappId: whatsappId

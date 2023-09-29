@@ -80,7 +80,8 @@ const UserModal = ({ open, onClose, userId }) => {
 		name: "",
 		email: "",
 		password: "",
-		profile: "user"
+		profile: "user",
+		queuesNull: false
 	};
 
 	const { user: loggedInUser } = useContext(AuthContext);
@@ -120,8 +121,10 @@ const UserModal = ({ open, onClose, userId }) => {
 		try {
 			if (userId) {
 				await api.put(`/users/${userId}`, userData);
+				console.log(values)
 			} else {
 				await api.post("/users", userData);
+				console.log(values)
 			}
 			toast.success(i18n.t("userModal.success"));
 		} catch (err) {
@@ -230,11 +233,45 @@ const UserModal = ({ open, onClose, userId }) => {
 														<MenuItem value="admin">Admin</MenuItem>
 														<MenuItem value="user">User</MenuItem>
 													</Field>
+
+													
 												</>
 											)}
 										/>
 									</FormControl>
+									
 								</div>
+								<FormControl
+										variant="outlined"
+										className={classes.maxWidth} fullWidth
+										margin="dense"
+									>
+										<Can
+											role={loggedInUser.profile}
+											perform="user-modal:editProfile"
+											yes={() => (
+												<>
+													<InputLabel id="sem-fila-label">
+														Ver fila (Cinza)
+													</InputLabel>
+
+													<Field
+														as={Select}
+														label="Ver conversas sem fila (Cinza)"
+														name="queuesNull"
+														labelId="queuesNull-label"
+														id="queuesNull"
+														required
+													>
+														<MenuItem value={true}>Sim</MenuItem>
+														<MenuItem value={false}>Não</MenuItem>
+													</Field>
+
+													
+												</>
+											)}
+										/>
+									</FormControl>
 								<Can
 									role={loggedInUser.profile}
 									perform="user-modal:editQueues"
