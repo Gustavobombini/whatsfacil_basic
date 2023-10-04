@@ -1,12 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import clsx from "clsx";
 
-import { Link as RouterLink } from "react-router-dom";
 
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListSubheader from "@material-ui/core/ListSubheader";
 
 import {
   makeStyles,
@@ -31,6 +26,8 @@ import UserModal from "../components/UserModal";
 import { AuthContext } from "../context/Auth/AuthContext";
 import BackdropLoading from "../components/BackdropLoading";
 import { i18n } from "../translate/i18n";
+import openSocket from "../services/socket-io";
+
 
 
 const drawerWidth = 240;
@@ -114,12 +111,20 @@ const LoggedInLayout = ({ children }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerVariant, setDrawerVariant] = useState("permanent");
   const { user } = useContext(AuthContext);
+  
 
   useEffect(() => {
     if (document.body.offsetWidth > 600) {
       setDrawerOpen(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (document.body.offsetWidth > 600) {
+      setDrawerOpen(true);
+    }
+  }, []);
+
 
   useEffect(() => {
     if (document.body.offsetWidth < 600) {

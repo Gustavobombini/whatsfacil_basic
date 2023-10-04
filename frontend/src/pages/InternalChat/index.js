@@ -214,6 +214,7 @@ function ChatWindow({ contact }) {
           }
           
           setMsg((msgList) => [...msgList, newMsg])
+
         }
       };
       socket.on("receive_msg", handleReceiveMessage);

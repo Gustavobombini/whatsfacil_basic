@@ -20,11 +20,10 @@ export const initIO = (httpServer: Server): SocketIO => {
     });
 
     socket.on("chat", (data: any) => {
-      console.log(data);
-       io.emit("receive_msg", {
-        inputValue: data.inputValue,
-        de : data.de,
-        para : data.para
+      io.emit("receive_msg", {
+          inputValue: data.inputValue,
+          de : data.de,
+          para : data.para
         });
       logger.info(`A client joined chat `);
     });

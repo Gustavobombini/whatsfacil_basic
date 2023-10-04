@@ -18,6 +18,7 @@ import { AuthProvider } from "../context/Auth/AuthContext";
 import { WhatsAppsProvider } from "../context/WhatsApp/WhatsAppsContext";
 import Route from "./Route";
 
+
 const Routes = () => {
   return (
     <BrowserRouter>
@@ -40,16 +41,16 @@ const Routes = () => {
                 component={Connections}
                 isPrivate
               />
-              <Route exact path="/contacts" component={Contacts} isPrivate />
+              <Route exact path="/contacts" component={Contacts} isPrivate  />
               <Route exact path="/users" component={Users} isPrivate />
-              <Route exact path="/internalchat" component={InternalChat} isPrivate />
+              <Route exact path="/internalchat"  component={InternalChat} isPrivate />
               <Route
                 exact
                 path="/quickAnswers"
                 component={QuickAnswers}
                 isPrivate
               />
-              <Route exact path="/Settings" component={Settings} isPrivate />
+              <Route exact path="/Settings" element={Settings} isPrivate />
               <Route exact path="/Queues" component={Queues} isPrivate />
             </LoggedInLayout>
           </WhatsAppsProvider>
