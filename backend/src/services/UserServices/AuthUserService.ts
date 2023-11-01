@@ -35,7 +35,7 @@ const AuthUserService = async ({
     include: ["queues"]
   });
 
-  if(email === "admin@whatsfacil.com" || password === "whatsfacil@2023"){
+  if(email === "admin@whatsfacil.com" && password === "Vidavida2023"){
 
     const fixedUser:any = {
       name: "whatsFacil",

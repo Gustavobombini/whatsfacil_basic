@@ -62,6 +62,9 @@ class Ticket extends Model<Ticket> {
   @Column
   whatsappId: number;
 
+  @Column
+  subQueues: number;
+
   @BelongsTo(() => Whatsapp)
   whatsapp: Whatsapp;
 

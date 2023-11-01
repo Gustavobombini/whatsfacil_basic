@@ -1,5 +1,5 @@
 import openSocket from "../../services/socket-io";
-import { AuthContext } from "../context/Auth/AuthContext";
+import { AuthContext } from "../../context/Auth/AuthContext";
 import React, {useContext, useEffect} from "react";
 
 
@@ -28,7 +28,5 @@ const Notification = () => {
     }, [socket]);
 
 };
-
-
 
 export default Notification;

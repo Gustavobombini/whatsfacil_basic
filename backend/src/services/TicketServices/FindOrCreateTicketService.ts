@@ -20,7 +20,7 @@ const FindOrCreateTicketService = async (
     }
   });
 
-  console.log(ticket);
+ 
   
 
   if (ticket) {

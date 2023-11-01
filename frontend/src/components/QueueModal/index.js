@@ -13,6 +13,12 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Step from "@material-ui/core/Step";
+import StepLabel from '@material-ui/core/StepLabel';
+import Stepper from '@material-ui/core/Stepper';
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import StepContent from "@material-ui/core/StepContent";
 
 import Row from "react-bootstrap/Row"
 import Col from 'react-bootstrap/Col';
@@ -24,7 +30,7 @@ import { i18n } from "../../translate/i18n";
 import api from "../../services/api";
 import toastError from "../../errors/toastError";
 import ColorPicker from "../ColorPicker";
-import { IconButton, InputAdornment } from "@material-ui/core";
+import { IconButton, Input, InputAdornment } from "@material-ui/core";
 import { Colorize, Label } from "@material-ui/icons";
 
 const useStyles = makeStyles(theme => ({
@@ -85,9 +91,13 @@ const QueueModal = ({ open, onClose, queueId }) => {
 	const [colorPickerModalOpen, setColorPickerModalOpen] = useState(false);
 	const [queue, setQueue] = useState(initialState);
 	const greetingRef = useRef();
-	const [subQueue, setSub] = useState([])
+	
+
+	
+	
 
 	useEffect(() => {
+		
 		(async () => {
 			if (!queueId) return;
 			try {
@@ -107,17 +117,19 @@ const QueueModal = ({ open, onClose, queueId }) => {
 				greetingMessage: "",
 			});
 		};
+
+
 	}, [queueId, open]);
 
+	
+
+	
+
+	 
 	const handleClose = () => {
 		onClose();
 		setQueue(initialState);
 	};
-
-	const addSubButton = (e) => {
-		e.preventDefault()
-		setSub((sub) => [...sub, sub+1])
-	}
 
 	const handleSaveQueue = async values => {
 		try {
@@ -131,6 +143,92 @@ const QueueModal = ({ open, onClose, queueId }) => {
 		} catch (err) {
 			toastError(err);
 		}
+	};
+
+	const [activeStep, setActiveStep] = React.useState(100);
+	const [subQueueName, setSubQueueName] = React.useState("");
+	const [subQueueMsg, setSubQueueMgs] = React.useState("");
+	const [subQueueQueue, setSubQueueQueue] = React.useState(100);
+	const [subQueues, setSubQueues] = React.useState([]);
+	const [fields, setFields] = React.useState();
+	const [loadQueue, setLoadQueue] = useState();
+
+	useEffect(() => {
+		setActiveStep(100);
+		(async () => {
+			try {
+			  const {data}  = await api.get("/queue");
+			  setLoadQueue(data)
+			} catch (err) {
+			  toastError(err);
+			}
+		  })();	  
+	}, [open, queueId]);
+
+
+	useEffect(() => {
+		(async () => {
+			if(queueId){
+				const {data}  = await api.get(`subQueues/${queueId}`);
+				setSubQueues(data.data);
+				setFields(data.data);	
+			}
+		})();
+	}, [queueId]);
+	
+  
+	const editQueue = (index) => {
+	  if (subQueues[index]) {
+		setActiveStep(index);;
+		setSubQueueName(subQueues[index].subQueueName);
+		setSubQueueMgs(subQueues[index].subQueueMsg);
+		setSubQueueQueue(subQueues[index].subQueueQueue);
+	  }
+	};
+  
+	const addOptions = () => {
+		if (fields.length === subQueues.length) {
+		  setFields([...fields, { value: "" }]);
+		  setActiveStep(subQueues.length);
+		}
+	  };
+  
+  
+	const handleSave = async(index) => {
+	  setActiveStep((prevActiveStep) => prevActiveStep + 100);
+	  const data = {
+		subQueueName: subQueueName,
+		subQueueMsg: subQueueMsg,
+		subQueueQueue: subQueueQueue,
+		queueId: queueId
+	  };
+	  
+	  const updatedSubQueues = [...subQueues];
+	  updatedSubQueues[index] = data;
+
+	  setSubQueues(updatedSubQueues );
+  
+	  setSubQueueName("");
+	  setSubQueueMgs("");
+	  setSubQueueQueue(0);
+
+	  await api.post("/subQueues/" + queueId, updatedSubQueues);
+  
+	};
+	const delQueue = async(index) => {
+		
+		const array = [...subQueues];;
+		array.splice(index, 1);
+		
+		await api.post("/subQueues/" + queueId, array);
+		
+		setSubQueues(array);
+		setFields(array);
+		
+		if (array.length == 0) {
+			setActiveStep(0);
+		}
+		
 	};
 
 	return (
@@ -229,10 +327,74 @@ const QueueModal = ({ open, onClose, queueId }) => {
 										margin="dense"
 									/>
 								</div>
+								<div>
+								{queueId ? (
+								<Stepper orientation="vertical" activeStep={activeStep} nonLinear>
+									{fields &&
+										fields.map((val, index) => (
+										<Step key={index}>
+											{activeStep == index ? (
+											<StepLabel>
+												<Input
+												value={subQueueName}
+												onChange={(e) => setSubQueueName(e.target.value)}
+												sx={{ minWidth: '90%' }}
+												/>
+												<Button variant="text" onClick={() => handleSave(index)}>
+												Save
+												</Button>
+											</StepLabel>
+											) : (
+											<StepLabel>
+												{subQueues[index] ? subQueues[index].subQueueName : ""}
+												{activeStep > 99 ? (
+													 <>
+													 <Button variant="text" onClick={() => editQueue(index)}>
+													   Edit
+													 </Button>
+													 <Button variant="text" onClick={() => delQueue(index)}>
+													   Del
+													 </Button>
+												   </>
+													) : (
+													""
+													)}
+											</StepLabel>
+											)}
+											<StepContent>
+											<div>
+												<label >Menssagem: </label>
+												<Input
 
-								
+												value={subQueueMsg}
+												onChange={(e) => setSubQueueMgs(e.target.value)}
+												sx={{ m: 4, minWidth: '90%' }}
+												/>
+											</div>
+											<div>
+												<label>Enivar para fila: </label>
+												<Select
+													value={subQueueQueue}
+													sx={{ m: 2, minWidth: '90%' }}
+													onChange={(e) => setSubQueueQueue(e.target.value)}
+												>
+													<MenuItem value={100}>Não</MenuItem>
+													{loadQueue.map((values, index) => (
+														<MenuItem key={index} value={values.id}>{values.name}</MenuItem>
+													))}
+												</Select>
+											</div>
+											</StepContent>
+										</Step>
+										))}
+									<Step>
+										<StepLabel onClick={() => addOptions()}>Adiconar opções</StepLabel>
+									</Step>
+									</Stepper>
 									
-								
+									): (<label>Salve para poder criar Sub Filas</label>)}	
+								</div>
+
 							</DialogContent>
 							<DialogActions>
 								<Button
@@ -261,10 +423,18 @@ const QueueModal = ({ open, onClose, queueId }) => {
 									)}
 								</Button>
 							</DialogActions>
-						</Form>
+							<Dialog>
+							<TextField id="outlined-basic" label="Outlined" variant="outlined" />
+							</Dialog>
+
+
+						</Form>	
 					)}
 				</Formik>
+				
 			</Dialog>
+								 
+
 		</div>
 	);
 };

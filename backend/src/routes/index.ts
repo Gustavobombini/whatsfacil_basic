@@ -11,6 +11,7 @@ import whatsappSessionRoutes from "./whatsappSessionRoutes";
 import queueRoutes from "./queueRoutes";
 import quickAnswerRoutes from "./quickAnswerRoutes";
 import chatInternalRoutes from "./chatInternalRoutes";
+import subQueuesRoutes from "./subQueues";
 import apiRoutes from "./apiRoutes";
 
 
@@ -27,6 +28,7 @@ routes.use(whatsappSessionRoutes);
 routes.use(queueRoutes);
 routes.use(quickAnswerRoutes);
 routes.use(chatInternalRoutes)
+routes.use(subQueuesRoutes)
 
 routes.use("/api/messages", apiRoutes);
 

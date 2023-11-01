@@ -29,6 +29,10 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "SET NULL"
       },
+      subQueues: {
+        type: DataTypes.INTEGER,
+        defaultValue: null,
+      },
       createdAt: {
         type: DataTypes.DATE(6),
         allowNull: false

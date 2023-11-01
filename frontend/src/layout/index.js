@@ -111,7 +111,26 @@ const LoggedInLayout = ({ children }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerVariant, setDrawerVariant] = useState("permanent");
   const { user } = useContext(AuthContext);
-  
+  const socket = openSocket();
+
+  useEffect(() => {
+    const handleReceiveMessage = (data) => {
+      const urlAtual = window.location.href;
+      const URL = urlAtual.split('/');
+      const idUrl = URL[URL.length - 1];
+
+
+      if(data.para === user.id &&  idUrl != data.de){ 
+          const notification = new Notification(data.deName , {
+          body: data.inputValue
+        });
+    }
+    };
+    socket.on("receive_msg", handleReceiveMessage);
+    return () => {
+    socket.off("receive_msg", handleReceiveMessage);
+    };
+}, [socket]);
 
   useEffect(() => {
     if (document.body.offsetWidth > 600) {

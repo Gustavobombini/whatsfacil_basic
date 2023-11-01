@@ -1,11 +1,14 @@
-import { Input, colors, makeStyles } from '@material-ui/core';
 import React, { useRef, useState, useEffect, useContext }  from 'react';
+import { useHistory, useParams } from "react-router-dom";
+
+import { Input, colors, makeStyles } from '@material-ui/core';
 import SendIcon from '@material-ui/icons/Send';
 import PersonIcon from '@material-ui/icons/Person';
 import Button from "@material-ui/core/Button";
 import api from "../../services/api";
 import openSocket from "../../services/socket-io";
 import { AuthContext } from "../../context/Auth/AuthContext";
+
 
 
 const socket = openSocket();
@@ -136,7 +139,7 @@ const InternalChat = () => {
     const [selectedContact, setSelectedContact] = useState(null);
     const [contact , setContacts] = useState([])
     const { user } = useContext(AuthContext);
-
+  
 
     useEffect(() => {
         //----------------- LISTA DE USUARIOS ------------\\
@@ -187,15 +190,19 @@ function ChatWindow({ contact }) {
     const [msg, setMsg] = useState([]);
     const messagesRef = useRef();
     const { user } = useContext(AuthContext);
-   
+    const history = useHistory();
+    const { Id } = useParams();
+
     const SendMsg = async (event) => {
       event.preventDefault(); 
       if(!inputValue.trim()) return
 
+      history.push(`/internalchat/${contact.id}`);
       const creatMessege = {
         inputValue : inputValue,
         de : user.id,
-        para : contact.id
+        para : contact.id,
+        deName: user.name
       }
       const newMsg = [...msg , creatMessege]
       socket.emit("chat",creatMessege)
@@ -210,7 +217,7 @@ function ChatWindow({ contact }) {
           const newMsg = {
             inputValue : data.inputValue,
             de : data.de,
-            para : data.para
+            para : data.para,
           }
           
           setMsg((msgList) => [...msgList, newMsg])

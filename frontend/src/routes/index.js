@@ -43,7 +43,7 @@ const Routes = () => {
               />
               <Route exact path="/contacts" component={Contacts} isPrivate  />
               <Route exact path="/users" component={Users} isPrivate />
-              <Route exact path="/internalchat"  component={InternalChat} isPrivate />
+              <Route exact path="/internalchat/:Id?"  component={InternalChat} isPrivate />
               <Route
                 exact
                 path="/quickAnswers"

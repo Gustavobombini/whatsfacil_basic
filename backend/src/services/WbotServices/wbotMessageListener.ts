@@ -14,6 +14,7 @@ import Contact from "../../models/Contact";
 import Ticket from "../../models/Ticket";
 import Message from "../../models/Message";
 
+
 import { getIO } from "../../libs/socket";
 import CreateMessageService from "../MessageServices/CreateMessageService";
 import { logger } from "../../utils/logger";
@@ -25,6 +26,12 @@ import UpdateTicketService from "../TicketServices/UpdateTicketService";
 import CreateContactService from "../ContactServices/CreateContactService";
 import GetContactService from "../ContactServices/GetContactService";
 import formatBody from "../../helpers/Mustache";
+import ListSubQueuesService from "../SubQueuesServices/ListSubQueuesService";
+import { or } from "sequelize";
+import ListQueuesService from "../QueueService/ListQueuesService";
+import ShowQueueService from "../QueueService/ShowQueueService";
+import { log } from "console";
+
 
 interface Session extends Client {
   id?: number;
@@ -164,6 +171,104 @@ const prepareLocation = (msg: WbotMessage): WbotMessage => {
   return msg;
 };
 
+const processSubQueue = async (ticket: Ticket, queueId: number,contact: Contact, wbot: Session, msg: WbotMessage) => {
+  const data =  await ListSubQueuesService(queueId)
+
+  const selectedOption = msg.body;
+
+  const choosenQueue = [+selectedOption - 1];
+  
+  if(Number(data.length)  <= Number(choosenQueue) ){
+    const body = formatBody(`\u200eOpção invalida.`, contact);
+    const debouncedSentMessage = debounce(
+      async () => {
+        const sentMessage = await wbot.sendMessage(
+          `${contact.number}@c.us`,
+          body
+        );
+        verifyMessage(sentMessage, ticket, contact);
+      },
+      3000,
+      ticket.id
+    );
+
+   debouncedSentMessage();
+  }
+
+    data.forEach(async (values, index) => {
+      if(index.toString() == choosenQueue.toString()){
+          const body = formatBody(`\u200e${values.subQueueMsg}`, contact);
+          const debouncedSentMessage = debounce(
+            async () => {
+              const sentMessage = await wbot.sendMessage(
+                `${contact.number}@c.us`,
+                body
+              );
+              verifyMessage(sentMessage, ticket, contact);
+            },
+            3000,
+            ticket.id
+          );
+        
+        debouncedSentMessage();
+
+      if(values.subQueueQueue == 100){
+        await UpdateTicketService({
+            ticketData: { subQueues : 4},
+            ticketId: ticket.id
+        }); 
+      }else{
+          await UpdateTicketService({
+            ticketData: { queueId : values.subQueueQueue},
+            ticketId: ticket.id
+        });
+
+        const data =  await ListSubQueuesService(values.subQueueQueue)   
+          if(data){
+            await veriftSubQueue(ticket, values.subQueueQueue, contact, wbot, msg) 
+          }
+
+      }
+    }
+  });
+}
+
+
+const veriftSubQueue = async (ticket: Ticket, queueId: number,contact: Contact, wbot: Session, msg: WbotMessage) => {
+    const data =  await ListSubQueuesService(queueId)
+
+    const dataQueue = await ShowQueueService(queueId)
+
+    const header = dataQueue.greetingMessage;
+
+    let options = ""
+
+    data.forEach((values, index) => {
+      options += `*${index + 1}* - ${values.subQueueName}\n`;
+    });
+
+    const body = formatBody(`\u200e${header}\n${options}`, contact);
+
+    const debouncedSentMessage = debounce(
+      async () => {
+        const sentMessage = await wbot.sendMessage(
+          `${contact.number}@c.us`,
+          body
+        );
+        verifyMessage(sentMessage, ticket, contact);
+      },
+      3000,
+      ticket.id
+    );
+
+    await UpdateTicketService({
+      ticketData: { subQueues : 2},
+      ticketId: ticket.id
+    });
+
+    debouncedSentMessage();
+}
+
 const verifyQueue = async (
   wbot: Session,
   msg: WbotMessage,
@@ -191,13 +296,25 @@ const verifyQueue = async (
       ticketId: ticket.id
     });
 
-    const body = formatBody(`\u200e${choosenQueue.greetingMessage}`, contact);
+    const subQueues =  await ListSubQueuesService(choosenQueue.id)
 
-    const sentMessage = await wbot.sendMessage(`${contact.number}@c.us`, body);
+    if(subQueues){
+      await veriftSubQueue(ticket, choosenQueue.id, contact, wbot, msg)    
+    }else{
 
-    await verifyMessage(sentMessage, ticket, contact);
+      const body = formatBody(`\u200e${choosenQueue.greetingMessage}`, contact);
+
+      const sentMessage = await wbot.sendMessage(`${contact.number}@c.us`, body);
+    
+      await verifyMessage(sentMessage, ticket, contact);
+    }
+    
+
+    
   } else {
     let options = "";
+
+    console.log(msg.body)
 
     queues.forEach((queue, index) => {
       options += `*${index + 1}* - ${queue.name}\n`;
@@ -317,6 +434,12 @@ const handleMessage = async (
       await verifyQueue(wbot, msg, ticket, contact);
     }
 
+    if(ticket.subQueues == 2){
+      await processSubQueue(ticket, ticket.queueId, contact, wbot, msg)
+    }
+    
+    
+
     if (msg.type === "vcard") {
       try {
         const array = msg.body.split("\n");
@@ -345,66 +468,7 @@ const handleMessage = async (
       }
     }
 
-    /* if (msg.type === "multi_vcard") {
-      try {
-        const array = msg.vCards.toString().split("\n");
-        let name = "";
-        let number = "";
-        const obj = [];
-        const conts = [];
-        for (let index = 0; index < array.length; index++) {
-          const v = array[index];
-          const values = v.split(":");
-          for (let ind = 0; ind < values.length; ind++) {
-            if (values[ind].indexOf("+") !== -1) {
-              number = values[ind];
-            }
-            if (values[ind].indexOf("FN") !== -1) {
-              name = values[ind + 1];
-            }
-            if (name !== "" && number !== "") {
-              obj.push({
-                name,
-                number
-              });
-              name = "";
-              number = "";
-            }
-          }
-        }
 
-        // eslint-disable-next-line no-restricted-syntax
-        for await (const ob of obj) {
-          try {
-            const cont = await CreateContactService({
-              name: ob.name,
-              number: ob.number.replace(/\D/g, "")
-            });
-            conts.push({
-              id: cont.id,
-              name: cont.name,
-              number: cont.number
-            });
-          } catch (error) {
-            if (error.message === "ERR_DUPLICATED_CONTACT") {
-              const cont = await GetContactService({
-                name: ob.name,
-                number: ob.number.replace(/\D/g, ""),
-                email: ""
-              });
-              conts.push({
-                id: cont.id,
-                name: cont.name,
-                number: cont.number
-              });
-            }
-          }
-        }
-        msg.body = JSON.stringify(conts);
-      } catch (error) {
-        console.log(error);
-      }
-    } */
   } catch (err) {
     Sentry.captureException(err);
     logger.error(`Error handling whatsapp message: Err: ${err}`);

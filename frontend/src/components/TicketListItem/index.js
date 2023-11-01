@@ -13,7 +13,9 @@ import Typography from "@material-ui/core/Typography";
 import Avatar from "@material-ui/core/Avatar";
 import Divider from "@material-ui/core/Divider";
 import Badge from "@material-ui/core/Badge";
-
+import DoneIcon from '@material-ui/icons/Done';
+import IconButton from '@material-ui/core/IconButton';
+import VisibilityIcon from '@material-ui/icons/Visibility'
 import { i18n } from "../../translate/i18n";
 
 import api from "../../services/api";
@@ -81,6 +83,10 @@ const useStyles = makeStyles(theme => ({
 		marginLeft: "auto",
 	},
 
+	bottomButton: {
+		top: "12px",
+	},
+
 	badgeStyle: {
 		color: "white",
 		backgroundColor: green[500],
@@ -103,8 +109,8 @@ const useStyles = makeStyles(theme => ({
 	userTag: {
 		position: "absolute",
 		marginRight: 5,
-		right: 5,
-		bottom: 5,
+		right: 20,
+		bottom: 30,
 		background: "#2576D2",
 		color: "#ffffff",
 		border: "1px solid #CCC",
@@ -129,6 +135,22 @@ const TicketListItem = ({ ticket }) => {
 			isMounted.current = false;
 		};
 	}, []);
+
+	const handleViewTicket = async id => {
+		setLoading(true);
+		try {
+			await api.put(`/tickets/${id}`, {
+				status: "pending",
+			});
+		} catch (err) {
+			setLoading(false);
+			toastError(err);
+		}
+		if (isMounted.current) {
+			setLoading(false);
+		}
+		history.push(`/tickets/${id}`);
+	};	
 
 	const handleAcepptTicket = async id => {
 		setLoading(true);
@@ -249,17 +271,21 @@ const TicketListItem = ({ ticket }) => {
 				
 				
 				{ticket.status === "pending" && (
-					<ButtonWithSpinner
-						color="primary"
-						variant="contained"
-						className={classes.acceptButton}
-						size="small"
-						loading={loading}
-						onClick={e => handleAcepptTicket(ticket.id)}
-					>
-						{i18n.t("ticketsList.buttons.accept")}
-					</ButtonWithSpinner>
+					<IconButton
+					className={classes.bottomButton}
+					color="primary"
+					onClick={e => handleAcepptTicket(ticket.id)} >
+					<DoneIcon />
+				  	</IconButton>	
 				)}
+				 {ticket.status === "pending" && (
+					<IconButton
+					className={classes.bottomButton}
+					color="primary"
+					onClick={e => handleViewTicket(ticket.id)} >
+					<VisibilityIcon />
+				  	</IconButton>								
+				)}	
 			</ListItem>
 			
 			
