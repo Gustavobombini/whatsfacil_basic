@@ -7,9 +7,9 @@ const subQueuesRoutes = express.Router();;
 
 
 
-subQueuesRoutes.post("/subQueues/:queueId", SubQueues.store);
+subQueuesRoutes.post("/subqueues/:queueId", SubQueues.store);
 
-subQueuesRoutes.get("/subQueues/:queueId",  SubQueues.index);
+subQueuesRoutes.get("/subqueues/:queueId",  SubQueues.index);
 
 
 

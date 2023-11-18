@@ -120,6 +120,11 @@ const useStyles = makeStyles((theme) => ({
         marginTop: "1%",
         overflowWrap: "break-word",
       },
+      spanData: { 
+        fontSize: "10px", // Defina o tamanho da fonte desejado.
+        marginLeft: "auto", // Isso empurrará o conteúdo para a direita.
+        display: "block", //
+      },
       button: {
         backgroundColor: "#2E8B57",
         marginTop: "5%"
@@ -196,13 +201,18 @@ function ChatWindow({ contact }) {
     const SendMsg = async (event) => {
       event.preventDefault(); 
       if(!inputValue.trim()) return
-
       history.push(`/internalchat/${contact.id}`);
+      const data = new Date(Date.now()).toLocaleString().split(',');
+      const dataH= data[1].split(":");
+      const dataD= data[0].split("/");
+      const datamsg = `${dataH[0]}:${dataH[1]} ${dataD[0]}/${dataD[1]}`
+
       const creatMessege = {
         inputValue : inputValue,
         de : user.id,
         para : contact.id,
-        deName: user.name
+        deName: user.name,
+        data : datamsg
       }
       const newMsg = [...msg , creatMessege]
       socket.emit("chat",creatMessege)
@@ -214,10 +224,12 @@ function ChatWindow({ contact }) {
     useEffect(() => {
       const handleReceiveMessage = (data) => {
         if(data.para === user.id && data.de === contact.id ){
+
           const newMsg = {
             inputValue : data.inputValue,
             de : data.de,
             para : data.para,
+            data : data.data
           }
           
           setMsg((msgList) => [...msgList, newMsg])
@@ -245,10 +257,16 @@ function ChatWindow({ contact }) {
             if(loadMsg.data.data.length > 0){
             
                 loadMsg.data.data.map(item => {
+                  const data = item.createdAt.split("T");
+                  const dataH= data[1].split(":");
+                  const dataD= data[0].split("-");
+                  const datamsg = `${dataH[0]}:${dataH[1]} ${dataD[2]}/${dataD[1]}`
+
                   const newMsg = {
                     inputValue : item.inputValue,
                     de : item.de,
-                    para : item.para
+                    para : item.para,
+                    data : datamsg
                   }
                   
                   setMsg((msgList) => [...msgList, newMsg])
@@ -275,10 +293,16 @@ function ChatWindow({ contact }) {
             {msg.map((item, index) =>  
                 (item.para === user.id ?
                    <div key={index} className={classes.boxLeft}>     
-                              <span key={index} className={classes.span}>{item.inputValue} </span>  
+                              <span key={index} className={classes.span}>
+                                {item.inputValue} 
+                                <span className={classes.spanData}>{item.data}</span>
+                              </span>  
                             </div>
                   : <div key={index} className={classes.boxRight}>   
-                            <span key={index} className={classes.span}>{item.inputValue} </span>  
+                             <span key={index} className={classes.span}>
+                                {item.inputValue} 
+                                <span className={classes.spanData}>{item.data}</span>
+                              </span>   
                           </div>   
                ))}
             </div>

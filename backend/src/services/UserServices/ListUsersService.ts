@@ -3,6 +3,7 @@ import Queue from "../../models/Queue";
 import User from "../../models/User";
 import Whatsapp from "../../models/Whatsapp";
 
+
 interface Request {
   searchParam?: string;
   pageNumber?: string | number;
@@ -35,7 +36,7 @@ const ListUsersService = async ({
 
   const { count, rows: users } = await User.findAndCountAll({
     where: whereCondition,
-    attributes: ["name", "id", "email", "profile", "createdAt"],
+    attributes: ["name", "id", "email", "profile", "createdAt", "access"],
     limit,
     offset,
     order: [["createdAt", "DESC"]],

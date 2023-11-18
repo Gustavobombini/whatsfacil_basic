@@ -21,18 +21,20 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
 
     console.log(queueId);
     
-
-    const  Queue = await SubQueues.destroy({
+     await SubQueues.destroy({
       where:{queueId : queueId }
     });
-    
-    let create:any = [];
-
-    data.map((value:any) => {
-      create = SubQueues.create(value)
+    console.log(req.body);
+    try {
+      data.map((value:any) => {
+       SubQueues.create(value)
     })
+    } catch (error) {
+      SubQueues.create(data)
+    }
+    
 
-    return res.json({create});
+    return res.json({});
    
 };
 

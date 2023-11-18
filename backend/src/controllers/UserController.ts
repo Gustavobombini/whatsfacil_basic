@@ -34,7 +34,7 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
     throw new AppError("Você não pode criar novos usuarios!", 403);
   }
 
-  const { email, password, name, profile, queueIds, whatsappId, queuesNull } = req.body;
+  const { email, password, name, profile, queueIds, whatsappId, queuesNull, access } = req.body;
 
   if (
     req.url === "/signup" &&
@@ -52,8 +52,8 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
     profile,
     queueIds,
     whatsappId,
-    queuesNull
-
+    queuesNull,
+    access
   });
 
   const io = getIO();

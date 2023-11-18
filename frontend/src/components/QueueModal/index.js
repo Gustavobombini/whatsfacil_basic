@@ -189,7 +189,7 @@ const QueueModal = ({ open, onClose, queueId }) => {
 	const addOptions = () => {
 		if (fields.length === subQueues.length) {
 		  setFields([...fields, { value: "" }]);
-		  setActiveStep(subQueues.length);
+		  setActiveStep(subQueues.length || 0);
 		}
 	  };
   

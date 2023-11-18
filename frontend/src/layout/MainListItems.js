@@ -70,67 +70,163 @@ const MainListItems = (props) => {
     return () => clearTimeout(delayDebounceFn);
   }, [whatsApps]);
 
-  return (
-    <>
-      <ListItemLink
+  if(user.profile === "custom"){
+    const itens = user.access.split(',')
+    return (
+      <>
+        <ListItemLink
           to="/"
           primary="WhatsFacil"
           icon={<DashboardOutlinedIcon />}
         />
+      {itens.map((item, index) =>{
+        if(item == 1){
+          return (
+            <ListItemLink
+              to="/tickets"
+              primary={i18n.t("mainDrawer.listItems.tickets")}
+              icon={<WhatsAppIcon />}
+            />
+          )
+        } 
+        if(item == 2){
+          return (
+            <ListItemLink
+            to="/internalchat"
+            primary="Chat Interno"
+            icon={< ChatBubbleOutlineIcon/>}
+          />
+          )
+        } 
+        if(item == 3){
+          return (
+              <ListItemLink
+              to="/contacts"
+              primary={i18n.t("mainDrawer.listItems.contacts")}
+              icon={<ContactPhoneOutlinedIcon />}
+          />
+          )
+        } 
+        if(item == 4){
+          return (
+            <ListItemLink
+            to="/quickAnswers"
+            primary={i18n.t("mainDrawer.listItems.quickAnswers")}
+            icon={<QuestionAnswerOutlinedIcon />}
+          />
+          )
+        } 
+        if(item == 5){
+          return (
+            <ListItemLink
+            to="/queues"
+            primary={i18n.t("mainDrawer.listItems.queues")}
+            icon={<AccountTreeOutlinedIcon />}
+          />
+          )
+        } 
+        if(item == 6){
+          return (
+            <ListItemLink
+            to="/connections"
+            primary={i18n.t("mainDrawer.listItems.connections")}
+            icon={
+              <Badge badgeContent={connectionWarning ? "!" : 0} color="error">
+                <SyncAltIcon />
+              </Badge>
+            }
+          />
+          )
+        } 
+        if(item == 10){
+          return (
+            <ListItemLink
+                to="/users"
+                primary={i18n.t("mainDrawer.listItems.users")}
+                icon={<PeopleAltOutlinedIcon />}
+              />
+          )
+        } 
+
         
-        <ListItemLink
-          to="/tickets"
-          primary={i18n.t("mainDrawer.listItems.tickets")}
-          icon={<WhatsAppIcon />}
-        />
+      }
+      )}
 
-        <ListItemLink
-          to="/internalchat"
-          primary="Chat Interno"
-          icon={< ChatBubbleOutlineIcon/>}
-        />
 
-        <ListItemLink
-          to="/contacts"
-          primary={i18n.t("mainDrawer.listItems.contacts")}
-          icon={<ContactPhoneOutlinedIcon />}
-        />
-        <ListItemLink
-          to="/quickAnswers"
-          primary={i18n.t("mainDrawer.listItems.quickAnswers")}
-          icon={<QuestionAnswerOutlinedIcon />}
-        />
+
+
+
+
+      </>
+    )
+    
       
-      <Can
-        role={user.profile}
-        perform="drawer-admin-items:view"
-        yes={() => (
-          <>
-            <ListItemLink
-              to="/users"
-              primary={i18n.t("mainDrawer.listItems.users")}
-              icon={<PeopleAltOutlinedIcon />}
-            />
-            <ListItemLink
-              to="/queues"
-              primary={i18n.t("mainDrawer.listItems.queues")}
-              icon={<AccountTreeOutlinedIcon />}
-            />
-            <ListItemLink
-          to="/connections"
-          primary={i18n.t("mainDrawer.listItems.connections")}
-          icon={
-            <Badge badgeContent={connectionWarning ? "!" : 0} color="error">
-              <SyncAltIcon />
-            </Badge>
-          }
+    
+  }else{
+    return (
+      <>
+        <ListItemLink
+            to="/"
+            primary="WhatsFacil"
+            icon={<DashboardOutlinedIcon />}
+          />
+          
+          <ListItemLink
+            to="/tickets"
+            primary={i18n.t("mainDrawer.listItems.tickets")}
+            icon={<WhatsAppIcon />}
+          />
+  
+          <ListItemLink
+            to="/internalchat"
+            primary="Chat Interno"
+            icon={< ChatBubbleOutlineIcon/>}
+          />
+  
+          <ListItemLink
+            to="/contacts"
+            primary={i18n.t("mainDrawer.listItems.contacts")}
+            icon={<ContactPhoneOutlinedIcon />}
+          />
+          <ListItemLink
+            to="/quickAnswers"
+            primary={i18n.t("mainDrawer.listItems.quickAnswers")}
+            icon={<QuestionAnswerOutlinedIcon />}
+          />
+        
+        <Can
+          role={user.profile}
+          perform="drawer-admin-items:view"
+          yes={() => (
+            <>
+              <ListItemLink
+                to="/users"
+                primary={i18n.t("mainDrawer.listItems.users")}
+                icon={<PeopleAltOutlinedIcon />}
+              />
+              <ListItemLink
+                to="/queues"
+                primary={i18n.t("mainDrawer.listItems.queues")}
+                icon={<AccountTreeOutlinedIcon />}
+              />
+              <ListItemLink
+            to="/connections"
+            primary={i18n.t("mainDrawer.listItems.connections")}
+            icon={
+              <Badge badgeContent={connectionWarning ? "!" : 0} color="error">
+                <SyncAltIcon />
+              </Badge>
+            }
+          />
+             
+            </>
+          )}
         />
-           
-          </>
-        )}
-      />
-   </>
-  );
+     </>
+    );
+  }
+
+  
 };
 
 export default MainListItems;

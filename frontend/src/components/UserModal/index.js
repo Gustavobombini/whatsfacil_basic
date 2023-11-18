@@ -33,6 +33,7 @@ import QueueSelect from "../QueueSelect";
 import { AuthContext } from "../../context/Auth/AuthContext";
 import { Can } from "../Can";
 import useWhatsApps from "../../hooks/useWhatsApps";
+import AccessUsers from "../AccessUsers";
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -64,6 +65,7 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
+
 const UserSchema = Yup.object().shape({
 	name: Yup.string()
 		.min(2, "Too Short!")
@@ -81,27 +83,34 @@ const UserModal = ({ open, onClose, userId }) => {
 		email: "",
 		password: "",
 		profile: "user",
-		queuesNull: false
+		queuesNull: false,
+		access: ''
 	};
 
 	const { user: loggedInUser } = useContext(AuthContext);
 
 	const [user, setUser] = useState(initialState);
 	const [selectedQueueIds, setSelectedQueueIds] = useState([]);
+	const [selectedAccess, setSelectedAccess] = useState();
 	const [showPassword, setShowPassword] = useState(false);
 	const [whatsappId, setWhatsappId] = useState(false);
+	const [profile, setProfile] = useState();
 	const {loading, whatsApps} = useWhatsApps();
+
 
 	useEffect(() => {
 		const fetchUser = async () => {
 			if (!userId) return;
 			try {
 				const { data } = await api.get(`/users/${userId}`);
+	
 				setUser(prevState => {
 					return { ...prevState, ...data };
 				});
 				const userQueueIds = data.queues?.map(queue => queue.id);
 				setSelectedQueueIds(userQueueIds);
+				setSelectedAccess(data.access)
+				console.log(data.access);
 				setWhatsappId(data.whatsappId ? data.whatsappId : '');
 			} catch (err) {
 				toastError(err);
@@ -117,7 +126,10 @@ const UserModal = ({ open, onClose, userId }) => {
 	};
 
 	const handleSaveUser = async values => {
-		const userData = { ...values, whatsappId, queueIds: selectedQueueIds };
+				
+		
+		const userData = { ...values, whatsappId, queueIds: selectedQueueIds, access : selectedAccess, profile: profile  };
+		console.log(userData)
 		try {
 			if (userId) {
 				await api.put(`/users/${userId}`, userData);
@@ -229,9 +241,12 @@ const UserModal = ({ open, onClose, userId }) => {
 														labelId="profile-selection-label"
 														id="profile-selection"
 														required
+														onChange={e => setProfile(e.target.value)}
 													>
 														<MenuItem value="admin">Admin</MenuItem>
 														<MenuItem value="user">User</MenuItem>
+														<MenuItem value="custom">Custom</MenuItem>
+													
 													</Field>
 
 													
@@ -262,6 +277,7 @@ const UserModal = ({ open, onClose, userId }) => {
 														labelId="queuesNull-label"
 														id="queuesNull"
 														required
+
 													>
 														<MenuItem value={true}>Sim</MenuItem>
 														<MenuItem value={false}>Não</MenuItem>
@@ -271,6 +287,28 @@ const UserModal = ({ open, onClose, userId }) => {
 												</>
 											)}
 										/>
+									</FormControl>
+
+									<FormControl
+										variant="outlined"
+										className={classes.maxWidth} fullWidth
+										margin="dense"
+									>
+										{profile == "custom" ?  
+										<Can
+											role={loggedInUser.profile}
+											perform="user-modal:editProfile"
+											yes={() => (
+												<>
+													<AccessUsers
+														selectedAccess={user.access}
+														onChange={values => setSelectedAccess(values)}
+													/>
+												</>
+											)}
+										/> : <></> }
+									
+									
 									</FormControl>
 								<Can
 									role={loggedInUser.profile}
@@ -282,6 +320,7 @@ const UserModal = ({ open, onClose, userId }) => {
 										/>
 									)}
 								/>
+								
 								<Can
 									role={loggedInUser.profile}
 									perform="user-modal:editQueues"

@@ -154,41 +154,85 @@ const TicketsManager = () => {
     }
   };
 
+  const access = user.access.split(',');
+
   return (
     <Paper elevation={0} variant="outlined" className={classes.ticketsWrapper}>
       <NewTicketModal
         modalOpen={newTicketModalOpen}
         onClose={(e) => setNewTicketModalOpen(false)}
       />
-      <Paper elevation={0} square className={classes.tabsHeader}>
-        <Tabs
-          value={tab}
-          onChange={handleChangeTab}
-          variant="fullWidth"
-          indicatorColor="primary"
-          textColor="primary"
-          aria-label="icon label tabs example"
-        >
-          <Tab
-            value={"open"}
-            icon={<MoveToInboxIcon />}
-            label={i18n.t("tickets.tabs.open.title")}
-            classes={{ root: classes.tab }}
-          />
-          <Tab
-            value={"closed"}
-            icon={<CheckBoxIcon />}
-            label={i18n.t("tickets.tabs.closed.title")}
-            classes={{ root: classes.tab }}
-          />
-          <Tab
-            value={"search"}
-            icon={<SearchIcon />}
-            label={i18n.t("tickets.tabs.search.title")}
-            classes={{ root: classes.tab }}
-          />
+   
+      {user.profile === 'custom' ? 
+         <Paper elevation={0} square className={classes.tabsHeader}>
+         <Tabs
+       value={tab}
+       onChange={handleChangeTab}
+       variant="fullWidth"
+       indicatorColor="primary"
+       textColor="primary"
+       aria-label="icon label tabs example"
+    > 
+      {access.map((item => {
+        if(item == 7){
+          return (
+           <Tab
+          value={"open"}
+          icon={<MoveToInboxIcon />}
+          label={i18n.t("tickets.tabs.open.title")}
+          classes={{ root: classes.tab }}
+        /> 
+          )
+          
+        }
+        if(item == 8){
+          return ( <Tab
+          value={"open"}
+          icon={<MoveToInboxIcon />}
+          label={i18n.t("tickets.tabs.open.title")}
+          classes={{ root: classes.tab }}
+        />)
+         
+        }
+        if(item == 9){
+          return ( <Tab
+          value={"search"}
+          icon={<SearchIcon />}
+          label={i18n.t("tickets.tabs.search.title")}
+          classes={{ root: classes.tab }}
+        />)
+         
+        }
+      }))  }
+        </Tabs>
+    </Paper>
+    : 
+    <Paper elevation={0} square className={classes.tabsHeader}>
+    <Tabs
+       value={tab}
+       onChange={handleChangeTab}
+       variant="fullWidth"
+       indicatorColor="primary"
+       textColor="primary"
+       aria-label="icon label tabs example"
+    > <Tab
+              value={"open"}
+              icon={<MoveToInboxIcon />}
+              label={i18n.t("tickets.tabs.open.title")}
+              classes={{ root: classes.tab }} /><Tab
+                value={"closed"}
+                icon={<CheckBoxIcon />}
+                label={i18n.t("tickets.tabs.closed.title")}
+                classes={{ root: classes.tab }} /><Tab
+                value={"search"}
+                icon={<SearchIcon />}
+                label={i18n.t("tickets.tabs.search.title")}
+                classes={{ root: classes.tab }} /> 
+        
         </Tabs>
       </Paper>
+      }
+      
       <Paper square elevation={0} className={classes.ticketOptionsBox}>
         {tab === "search" ? (
           <div className={classes.serachInputWrapper}>

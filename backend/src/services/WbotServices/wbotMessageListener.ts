@@ -476,7 +476,7 @@ const handleMessage = async (
 };
 
 const handleMsgAck = async (msg: WbotMessage, ack: MessageAck) => {
-  await new Promise(r => setTimeout(r, 500));
+  await new Promise(r => setTimeout(r, 7000));
 
   const io = getIO();
 
