@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useReducer, useRef } from "react";
+import React, { useState, useEffect, useReducer, useRef, useContext } from "react";
+
 
 import { isSameDay, parseISO, format } from "date-fns";
 import openSocket from "../../services/socket-io";
 import clsx from "clsx";
-
+import { AuthContext } from "../../context/Auth/AuthContext";
 import { green } from "@material-ui/core/colors";
 import {
   Button,
@@ -315,7 +316,7 @@ const MessagesList = ({ ticketId, isGroup }) => {
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
   const lastMessageRef = useRef();
-
+  const { user } = useContext(AuthContext);
   const [selectedMessage, setSelectedMessage] = useState({});
   const [anchorEl, setAnchorEl] = useState(null);
   const messageOptionsMenuOpen = Boolean(anchorEl);
@@ -334,9 +335,9 @@ const MessagesList = ({ ticketId, isGroup }) => {
       const fetchMessages = async () => {
         try {
           const { data } = await api.get("/messages/" + ticketId, {
-            params: { pageNumber },
+            params: { pageNumber, seeAllMsg : user.seeAllMsg },
           });
-
+          console.log(user)
           if (currentTicketId.current === ticketId) {
             dispatch({ type: "LOAD_MESSAGES", payload: data.messages });
             setHasMore(data.hasMore);

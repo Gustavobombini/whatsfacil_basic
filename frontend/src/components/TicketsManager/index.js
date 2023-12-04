@@ -154,7 +154,14 @@ const TicketsManager = () => {
     }
   };
 
-  const access = user.access.split(',');
+
+  const access = [7];
+
+  try {
+    access = user.access.split(',');
+  } catch (error) {
+    console.log(error)
+  }
 
   return (
     <Paper elevation={0} variant="outlined" className={classes.ticketsWrapper}>

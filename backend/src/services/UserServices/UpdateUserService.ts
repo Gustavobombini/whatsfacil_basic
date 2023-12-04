@@ -11,8 +11,9 @@ interface UserData {
   profile?: string;
   queueIds?: number[];
   whatsappId?: number;
-  queuesNull: boolean;
-  access: string;
+  queuesNull?: boolean;
+  access?: string;
+  seeAllMsg?: number;
 }
 
 interface Request {
@@ -26,6 +27,7 @@ interface Response {
   email: string;
   profile: string;
   queuesNull: boolean;
+  
 }
 
 const UpdateUserService = async ({
@@ -39,10 +41,11 @@ const UpdateUserService = async ({
     email: Yup.string().email(),
     profile: Yup.string(),
     password: Yup.string(),
-    queuesNull: Yup.boolean()
+    queuesNull: Yup.boolean(),
+    seeAllMsg: Yup.number()
   });
 
-  const { email, password, profile, name, queueIds = [], whatsappId, queuesNull, access } = userData;
+  const { email, password, profile, name, queueIds = [], whatsappId, queuesNull, access, seeAllMsg } = userData;
 
   try {
     await schema.validate({ email, password, profile, name });
@@ -57,7 +60,8 @@ const UpdateUserService = async ({
     name,
     whatsappId: whatsappId ? whatsappId : null,
     queuesNull,
-    access
+    access,
+    seeAllMsg
   });
 
   await user.$set("queues", queueIds);

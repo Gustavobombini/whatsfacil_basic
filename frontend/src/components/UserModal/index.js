@@ -84,7 +84,8 @@ const UserModal = ({ open, onClose, userId }) => {
 		password: "",
 		profile: "user",
 		queuesNull: false,
-		access: ''
+		access: '',
+		seeAllMsg: 1
 	};
 
 	const { user: loggedInUser } = useContext(AuthContext);
@@ -94,7 +95,7 @@ const UserModal = ({ open, onClose, userId }) => {
 	const [selectedAccess, setSelectedAccess] = useState();
 	const [showPassword, setShowPassword] = useState(false);
 	const [whatsappId, setWhatsappId] = useState(false);
-	const [profile, setProfile] = useState();
+	
 	const {loading, whatsApps} = useWhatsApps();
 
 
@@ -110,7 +111,7 @@ const UserModal = ({ open, onClose, userId }) => {
 				const userQueueIds = data.queues?.map(queue => queue.id);
 				setSelectedQueueIds(userQueueIds);
 				setSelectedAccess(data.access)
-				console.log(data.access);
+				console.log(data);
 				setWhatsappId(data.whatsappId ? data.whatsappId : '');
 			} catch (err) {
 				toastError(err);
@@ -128,8 +129,7 @@ const UserModal = ({ open, onClose, userId }) => {
 	const handleSaveUser = async values => {
 				
 		
-		const userData = { ...values, whatsappId, queueIds: selectedQueueIds, access : selectedAccess, profile: profile  };
-		console.log(userData)
+		const userData = { ...values, whatsappId, queueIds: selectedQueueIds, access : selectedAccess };
 		try {
 			if (userId) {
 				await api.put(`/users/${userId}`, userData);
@@ -241,7 +241,7 @@ const UserModal = ({ open, onClose, userId }) => {
 														labelId="profile-selection-label"
 														id="profile-selection"
 														required
-														onChange={e => setProfile(e.target.value)}
+												
 													>
 														<MenuItem value="admin">Admin</MenuItem>
 														<MenuItem value="user">User</MenuItem>
@@ -288,13 +288,45 @@ const UserModal = ({ open, onClose, userId }) => {
 											)}
 										/>
 									</FormControl>
+									<FormControl
+										variant="outlined"
+										className={classes.maxWidth} fullWidth
+										margin="dense"
+									>
+										<Can
+											role={loggedInUser.profile}
+											perform="user-modal:editProfile"
+											yes={() => (
+												<>
+													<InputLabel id="seeAllMsg-label">
+														Ver todas Msg.
+													</InputLabel>
+
+													<Field
+														as={Select}
+														label="Ver todas Msg."
+														name="seeAllMsg"
+														labelId="seeAllMsg-label"
+														id="seeAllMsg"
+														required
+
+													>
+														<MenuItem value={1}>Sim</MenuItem>
+														<MenuItem value={2}>Não</MenuItem>
+													</Field>
+
+													
+												</>
+											)}
+										/>
+									</FormControl>
 
 									<FormControl
 										variant="outlined"
 										className={classes.maxWidth} fullWidth
 										margin="dense"
 									>
-										{profile == "custom" ?  
+									
 										<Can
 											role={loggedInUser.profile}
 											perform="user-modal:editProfile"
@@ -306,7 +338,7 @@ const UserModal = ({ open, onClose, userId }) => {
 													/>
 												</>
 											)}
-										/> : <></> }
+										/> 
 									
 									
 									</FormControl>

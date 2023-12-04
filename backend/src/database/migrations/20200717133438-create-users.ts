@@ -29,6 +29,9 @@ module.exports = {
       queuesNull: {
         type: DataTypes.BOOLEAN,
       },
+      seeAllMsg: {
+        type: DataTypes.INTEGER,
+      },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false

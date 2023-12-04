@@ -47,6 +47,9 @@ class User extends Model<User> {
   @Column
   queuesNull: boolean;
 
+  @Column
+  seeAllMsg: number;
+
   @Default("admin")
   @Column
   profile: string;

@@ -71,6 +71,7 @@ const MainListItems = (props) => {
   }, [whatsApps]);
 
   if(user.profile === "custom"){
+  
     const itens = user.access.split(',')
     return (
       <>

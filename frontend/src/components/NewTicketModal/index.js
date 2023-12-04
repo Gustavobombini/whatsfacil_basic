@@ -19,6 +19,7 @@ import ButtonWithSpinner from "../ButtonWithSpinner";
 import ContactModal from "../ContactModal";
 import toastError from "../../errors/toastError";
 import { AuthContext } from "../../context/Auth/AuthContext";
+import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
 
 const filter = createFilterOptions({
 	trim: true,
@@ -31,6 +32,7 @@ const NewTicketModal = ({ modalOpen, onClose }) => {
 	const [loading, setLoading] = useState(false);
 	const [searchParam, setSearchParam] = useState("");
 	const [selectedContact, setSelectedContact] = useState(null);
+	const [selectedQueue, setSelectedQueue] = useState();
 	const [newContact, setNewContact] = useState({});
 	const [contactModalOpen, setContactModalOpen] = useState(false);
 	const { user } = useContext(AuthContext);
@@ -66,14 +68,15 @@ const NewTicketModal = ({ modalOpen, onClose }) => {
 		setSelectedContact(null);
 	};
 
-	const handleSaveTicket = async contactId => {
-		if (!contactId) return;
+	const handleSaveTicket = async (contactId, queue) => {
+		if (!contactId && !queue) return;
 		setLoading(true);
 		try {
 			const { data: ticket } = await api.post("/tickets", {
 				contactId: contactId,
 				userId: user.id,
 				status: "open",
+				queueId: queue
 			});
 			history.push(`/tickets/${ticket.id}`);
 		} catch (err) {
@@ -180,6 +183,19 @@ const NewTicketModal = ({ modalOpen, onClose }) => {
 							/>
 						)}
 					/>
+					<FormControl variant="outlined" style={{ width: 300, marginTop: 5 }}>
+						<InputLabel>{i18n.t("transferTicketModal.fieldQueueLabel")}</InputLabel>
+						<Select
+							onChange={(e) => setSelectedQueue(e.target.value)}
+							required
+							label={i18n.t("transferTicketModal.fieldQueuePlaceholder")}
+						>
+							
+							{user.queues.map((queue) => (
+								<MenuItem key={queue.id} value={queue.id}>{queue.name}</MenuItem>
+							))}
+						</Select>
+					</FormControl>
 				</DialogContent>
 				<DialogActions>
 					<Button
@@ -193,8 +209,8 @@ const NewTicketModal = ({ modalOpen, onClose }) => {
 					<ButtonWithSpinner
 						variant="contained"
 						type="button"
-						disabled={!selectedContact}
-						onClick={() => handleSaveTicket(selectedContact.id)}
+						disabled={!selectedQueue}
+						onClick={() => handleSaveTicket(selectedContact.id, selectedQueue)}
 						color="primary"
 						loading={loading}
 					>

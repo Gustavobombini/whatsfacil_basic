@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   appBarSpacer: {
-    minHeight: "64px",
+    minHeight: "57px",
   },
   content: {
     flex: 1,

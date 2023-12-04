@@ -4,7 +4,7 @@ import SetTicketMessagesAsRead from "../helpers/SetTicketMessagesAsRead";
 import { getIO } from "../libs/socket";
 import Message from "../models/Message";
 
-import ListMessagesService from "../services/MessageServices/ListMessagesService";
+import {ListMessagesService, ListAllMessagesService} from "../services/MessageServices/ListMessagesService";
 import ShowTicketService from "../services/TicketServices/ShowTicketService";
 import DeleteWhatsAppMessage from "../services/WbotServices/DeleteWhatsAppMessage";
 import SendWhatsAppMedia from "../services/WbotServices/SendWhatsAppMedia";
@@ -12,6 +12,7 @@ import SendWhatsAppMessage from "../services/WbotServices/SendWhatsAppMessage";
 
 type IndexQuery = {
   pageNumber: string;
+  seeAllMsg: any;
 };
 
 type MessageData = {
@@ -23,9 +24,19 @@ type MessageData = {
 
 export const index = async (req: Request, res: Response): Promise<Response> => {
   const { ticketId } = req.params;
-  const { pageNumber } = req.query as IndexQuery;
+  const { pageNumber, seeAllMsg } = req.query as IndexQuery;
 
-  const { count, messages, ticket, hasMore } = await ListMessagesService({
+  if(seeAllMsg == 1){
+    const { count, messages, ticket, hasMore } = await ListAllMessagesService({
+      pageNumber,
+      ticketId
+    });
+
+    SetTicketMessagesAsRead(ticket);
+
+    return res.json({ count, messages, ticket, hasMore });
+  }else{
+    const { count, messages, ticket, hasMore } = await ListMessagesService({
     pageNumber,
     ticketId
   });
@@ -33,6 +44,10 @@ export const index = async (req: Request, res: Response): Promise<Response> => {
   SetTicketMessagesAsRead(ticket);
 
   return res.json({ count, messages, ticket, hasMore });
+  }
+  
+
+ 
 };
 
 export const store = async (req: Request, res: Response): Promise<Response> => {

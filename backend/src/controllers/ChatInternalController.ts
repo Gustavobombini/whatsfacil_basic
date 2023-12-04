@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import ChatInternal from "../models/ChatInternal";
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 
-
+''
 export const index = async (req: Request, res: Response): Promise<Response> => {
   const {para , de} = req.query as any
   

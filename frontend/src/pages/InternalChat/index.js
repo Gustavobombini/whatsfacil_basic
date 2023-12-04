@@ -257,16 +257,12 @@ function ChatWindow({ contact }) {
             if(loadMsg.data.data.length > 0){
             
                 loadMsg.data.data.map(item => {
-                  const data = item.createdAt.split("T");
-                  const dataH= data[1].split(":");
-                  const dataD= data[0].split("-");
-                  const datamsg = `${dataH[0]}:${dataH[1]} ${dataD[2]}/${dataD[1]}`
-
+              
                   const newMsg = {
                     inputValue : item.inputValue,
                     de : item.de,
                     para : item.para,
-                    data : datamsg
+                    data : item.data
                   }
                   
                   setMsg((msgList) => [...msgList, newMsg])

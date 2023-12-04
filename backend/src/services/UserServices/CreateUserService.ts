@@ -11,8 +11,9 @@ interface Request {
   queueIds?: number[];
   profile?: string;
   whatsappId?: number;
-  queuesNull: boolean;
-  access: string;
+  queuesNull?: boolean;
+  access?: string;
+  seeAllMsg?: number;
 }
 
 interface Response {
@@ -30,7 +31,8 @@ const CreateUserService = async ({
   profile = "admin",
   whatsappId,
   queuesNull,
-  access
+  access,
+  seeAllMsg
 }: Request): Promise<Response> => {
   const schema = Yup.object().shape({
     name: Yup.string().required().min(2),
@@ -65,7 +67,8 @@ const CreateUserService = async ({
       profile,
       whatsappId: whatsappId ? whatsappId : null,
       queuesNull,
-      access
+      access,
+      seeAllMsg
     },
     { include: ["queues", "whatsapp"] }
   );

@@ -2,7 +2,7 @@ import { QueryInterface, DataTypes } from "sequelize";
 
 module.exports = {
   up: (queryInterface: QueryInterface) => {
-    return queryInterface.createTable("Subqueues", {
+    return queryInterface.createTable("SubQueues", {
       id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,

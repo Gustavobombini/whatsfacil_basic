@@ -24,6 +24,9 @@ class ChatInternal extends Model<ChatInternal> {
   inputValue: string;
 
   @Column
+  data: string;
+
+  @Column
   de: number;
 
   @Column

@@ -13,6 +13,10 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false
       },
+      data: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
       de: {
         type: DataTypes.INTEGER,
         allowNull: false

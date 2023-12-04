@@ -92,6 +92,7 @@ const useAuth = () => {
 			localStorage.setItem("token", JSON.stringify(data.token));
 			api.defaults.headers.Authorization = `Bearer ${data.token}`;
 			setUser(data.user);
+			console.log(data.user);
 			setIsAuth(true);
 			toast.success(i18n.t("auth.toasts.success"));
 			history.push("/tickets");

@@ -61,10 +61,17 @@ export const index = async (req: Request, res: Response): Promise<Response> => {
 };
 
 export const store = async (req: Request, res: Response): Promise<Response> => {
-  const { contactId, status, userId }: TicketData = req.body;
+  const { contactId, status, userId, queueId }: TicketData = req.body;
 
-  const ticket = await CreateTicketService({ contactId, status, userId });
+  console.log(req.body)
 
+  const ticket = await CreateTicketService({ contactId, status, userId});
+  
+  setTimeout(async () => {
+  if(queueId){
+    await UpdateTicketService({ticketId: ticket.id,ticketData: { queueId : queueId }});
+    }
+  }, 1000);
   const io = getIO();
   io.to(ticket.status).emit("ticket", {
     action: "update",
