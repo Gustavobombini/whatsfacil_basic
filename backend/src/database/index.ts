@@ -12,6 +12,7 @@ import UserQueue from "../models/UserQueue";
 import QuickAnswer from "../models/QuickAnswer";
 import ChatInternal from "../models/ChatInternal";
 import SubQueues from "../models/SubQueues";
+import ContactsCategories from "../models/ContactsCategories";
 
 
 // eslint-disable-next-line
@@ -34,7 +35,7 @@ const models = [
   QuickAnswer,
   ChatInternal,
   SubQueues,
-  
+  ContactsCategories
 
 ];
 

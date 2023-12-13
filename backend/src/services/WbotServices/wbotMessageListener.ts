@@ -314,7 +314,7 @@ const verifyQueue = async (
   } else {
     let options = "";
 
-    console.log(msg.body)
+    
 
     queues.forEach((queue, index) => {
       options += `*${index + 1}* - ${queue.name}\n`;
@@ -365,6 +365,11 @@ const handleMessage = async (
   }
 
   try {
+
+    console.log(msg.body)
+
+    
+
     let msgContact: WbotContact;
     let groupContact: Contact | undefined;
 
@@ -417,6 +422,15 @@ const handleMessage = async (
       unreadMessages,
       groupContact
     );
+
+    if(msg.body === "#"){
+      await UpdateTicketService({
+        ticketData: { queueId : null, status : "pending", subQueues: null, userId: null },
+        ticketId: ticket.id
+    });
+
+    await verifyQueue(wbot, msg, ticket, contact);
+    }
 
     if (msg.hasMedia) {
       await verifyMediaMessage(msg, ticket, contact);

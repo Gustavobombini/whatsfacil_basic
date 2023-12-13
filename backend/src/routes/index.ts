@@ -14,6 +14,8 @@ import chatInternalRoutes from "./chatInternalRoutes";
 import subQueuesRoutes from "./subQueues";
 import apiRoutes from "./apiRoutes";
 
+import ContactsCategoriesRoutes from "./ContactsCategoriesRoutes";
+
 
 const routes = Router();
 
@@ -29,6 +31,7 @@ routes.use(queueRoutes);
 routes.use(quickAnswerRoutes);
 routes.use(chatInternalRoutes)
 routes.use(subQueuesRoutes)
+routes.use(ContactsCategoriesRoutes)
 
 routes.use("/api/messages", apiRoutes);
 

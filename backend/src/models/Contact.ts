@@ -35,6 +35,9 @@ class Contact extends Model<Contact> {
   email: string;
 
   @Column
+  ContactsCategories: number;
+
+  @Column
   profilePicUrl: string;
 
   @Default(false)
